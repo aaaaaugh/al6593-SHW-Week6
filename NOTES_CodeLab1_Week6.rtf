@@ -1,0 +1,79 @@
+{\rtf1\ansi\ansicpg1252\deff0\nouicompat\deflang1033{\fonttbl{\f0\fnil\fcharset0 Calibri;}}
+{\*\generator Riched20 10.0.19041}\viewkind4\uc1 
+\pard\sa200\sl276\slmult1\qc\f0\fs22\lang9 CODE LAB 1 - WEEK 6 - INTRO TO JSON\par
+
+\pard\sa200\sl276\slmult1 >What is JSON? (not jay lol)\line\line\tab JavaScript Object Notation: a way for representing data in a file so that it is well \tab understood and universal. It's super easy to send data to someone's phone with \tab JSON, and much faster and easier for people to understand unlike XML. \par
+>Time to make a lil' physics game! \line >Let's start by making some cubes. GameObject > 3D Object > Cube. 3 cubes.\par
+
+\pard\sa200\sl276\slmult1\qr //TIP: You can select all of your \line objects at the same time to \line change them all at once.\par
+
+\pard\sa200\sl276\slmult1\line\tab -Mess with their position/rotation. Name the objects. \line\tab -You're going to be adding certain things that you'll be saving the position of. You're \tab going to save the position of things that you move around in the file, so when you \tab come back you can manipulate them again. One of the most basic things you can use \tab JSON for. \par
+>Add a sphere. GameObject > 3D Object > Sphere. Move it to the top. \par
+\tab -Add Component to sphere. On Inspector > Add Component > Rigidbody. \par
+>Make a Materials Folder. Make colors for the ramps and ball.\line\line\tab -Create > Materials > Choose Color. \par
+>Roll into those prizes...\line\line\tab -GameObject > 3DObject > Cube > Name it Prize1.\line\tab -Create > Materials > Choose Color for Cube.\par
+>Make another cube... but this cube will be DiFferent.\par
+\tab -GameObject>3DObject>Cube>Name it MoveCube\line\tab -This cube used to help the Player with this game. \line\line >Create a new Folder. Create a Script for the MoveCube object. \par
+\tab -You want to create a Script that, when you click on the Sphere, it begins to fall.\line\tab -The gravity on the Rigidbody component of the Sphere is what is making it fall.\line\tab -Make new Script called ActivateOnClick. TURN ON PHYSICS!!!\line\tab -There's a bunch of different ways to do this...\par
+>ActivateOnClick script\tab\par
+\tab\tab void OnMouseDown()\line\tab\tab\{\tab\line\tab\tab\}\par
+\tab -A function that is called when u clicky click.\line\tab -Turn off the physics on what is giving the Sphere physics. \line\tab -What's the thing that gives you physics on the sphere? The Rigidbody.\line\tab -You have to reference it in the script.\par
+\tab\tab\{\line\tab\tab\tab Rigidbody rigidboy; //variable\line\line\tab\tab\tab //Start is called before the first frame update\line\tab\tab\tab\line\tab\tab\tab void Start()\line\tab\tab\tab\{\tab\tab\tab\line\tab\tab\tab\tab rigidbody = GetComponent<Rigidbody>(); \line\tab\tab\tab\tab rigidbody.isKinematic = true; //NO PHYSICS!!\line\tab\tab\tab\}\par
+\tab -Make a variable for the rigidbody. Then you get the rigidbody component.\line\tab -isKinematic allows for you to turn off the physics on the rigidbody component.\line\tab -Kinematic basically means it's not going to be affected by the physics.\par
+>What if we want something to happen if someone clicks on the sphere?\line\line\tab\tab void OnMouseDown()\line\tab\tab\{\line\tab\tab\tab rigidbody.isKinematic = false; //YES PHYSICS\line\tab\tab\}\par
+  >We want to let the Player be able to move around the MoveCube.\par
+\tab -Create a new script called MovableObject.\line\tab -Add MovableObject script onto MoveCube component. \line\tab -We want to be able to not only click on the object, but move it around\par
+\tab void OnMouseDrag()\line\tab\{\line\tab\tab transform.position = new Vector3(0, 0, 0); \line\tab\}\line\tab\line\tab -Now while normally this would be sufficient in a 2D Unity scene, bc ur \line\tab working with a 3D space the MoveCube will automatically go to 0, 0, 0.\line\tab -But let's say you want to be able to move it from its default position.\line\line\tab Vector3 GetMouseWorldPosition()\line\tab\{\line\line\tab\}\par
+\tab ^This function is used to determine where in the world ur clicking.\line\tab Not where on the SCREEN are you clicking, but the world. \par
+\tab Vector 3 GetMouseWorldPosition() //changes screen pos to world pos\line\tab\{\line\tab\tab Vector3 mousePosition = Input.mousePosition; //screen pos of mouse\par
+\tab\tab mousePosition.z = 0; \par
+\tab\tab return Camera.main.ScreenToWorldPoint(mousePosition);\line\tab\}\line\line\tab ^ScreenToWorldPoint basically transforms a point from the screen space into\line\tab world space. The world space is defined as the coordinate system that's on your \line\tab object's hierarchy (x, y, z). \line\tab -Screenspace is defined in pixels. But the z-position is from the camera. \line\tab -Screen into world. World into screen. THis works for 3D games. \par
+>So instead of having the transform.position just be the lowly 0, 0, 0, you'll set it to...\line\line\tab\{\line\tab\tab transform.position = GetMouseWorldPosition();\line\tab\}\par
+>But when you play the scene... egads! Where did that pesky MoveCube go>??\par
+\tab -Where is your camera? According to the Inspector, it says (0, 0, -10). \line\tab -You can't set the mousePosition.z = 0. Bc it's talking abt how far away \line\tab from the camera are we? \line\tab -We actually need to get where the actual position is.\par
+\tab\tab mousePosition.z = \line\tab\tab\tab\fs22 Camera.main.WorldToScreenPoint(gameObject.transform.position).z; \fs22\line\line\tab ^This allows you to get the actual position of the game object.\par
+>Whoaa!!! Now you can drag the MoveCube object to your heart's content.\line\line\tab -Set the Prize1 to Is Trigger. Notice the Sphere just run through that transparent\line\tab Cube...\par
+>One more script. Name it PrizeScript.\par
+\tab -Let's do something so that when the sphere exits the prize...\par
+\tab\tab void OnTriggerExit(Collider other)\line\tab\tab\{\line\tab\tab\tab Destroy(gameObject);\line\tab\tab\}\line\tab\tab\line\tab ^ANNHILATE \par
+>DUPLICATION SEQUENCE GOOOOOOOOOOOOOOOOOO (make two more MoveCubes)\par
+\tab -Jeez isn't it super annoying that everytime you fail the puzzle you \line\tab have to restart and all your cubes just go back to the same position \line\tab in the Start? What a bummer.\line\tab -If only there was a way... hmmmm???\par
+>DUPLICATE SEQUENCE FOR PRIZE CUBES GOOOOOOO\par
+\tab -If only there was some easy way to save the cubes so that you don't have\line\tab to keep going back to the staAaArt (coldplay reference)\par
+>Turns out you can save your data somewhere! Hurray day is saved.\tab\par
+>Go back to your MovableObject script.\par
+\tab\tab string filePath; //make a path to save file\line\line\tab\tab void Start()\line\tab\tab\{\line\tab\tab\tab filePath = Application.dataPath + "/" + name + ".json";\line\tab\tab\}\par
+
+\pard\sa200\sl276\slmult1\qr REMINDER: Application.dataPath will\line make a path to regardless of what app\par
+
+\pard\sa200\sl276\slmult1\tab\tab ^name is the GameObject. Meaning, even if you have different\line\tab\tab names for all your GameObjects, name will have each one of them\line\tab\tab have their own save files. \par
+\tab -Speaking of NAMES, rename all your GameObjects in the hierarchy. \line\tab -Each MoveCube get it's own file. MoveCube0.json, MoveCube1.json, etc...\par
+>Now you're going to add a new function. \par
+\tab\tab void OnApplicationQuit() //QUITTING the application!\line\tab\tab\{\line\tab\tab\tab string jsonPosition = JsonUtility.ToJson(transform.position);\line\tab\tab\tab Debug.Log(jsonPosition); //print string on console\line\tab\tab\}\par
+
+\pard\sa200\sl276\slmult1\qr REMINDER: An event function is\line activated by Unity in response\line to events that occur during play.\par
+
+\pard\sa200\sl276\slmult1\tab\tab ^While there's lots of deep and interesting ways to store/save data,\line\tab\tab we're just scratching the surface today.\line\tab\tab ^JsonUtility is a handy Unity thing that allows us to take an object\line\tab\tab and turn it into Json.\line\tab\tab ^What obj do you want to turn into Json? transform.position\par
+\tab -Let's add a second argument to our string jsonPosition. \line\tab\line\tab\tab\{\line\tab\tab\tab string jsonPosition = \line\tab\tab\tab\tab JSonUtility.ToJson(transform.position, true); \line\line\tab\tab ^By adding a true argument, it'll space out the x, y, and z values\line\tab\tab on the console. Makes it easier to read. HOW PRETTY!!\par
+>Let's write/save this to a file, using filePath.\par
+\tab\tab\{\par
+\tab\tab\tab string jsonPosition =\line\tab\tab\tab\tab JsonUtility.ToJson(transform.position, true);\line\tab\tab\tab Debug.Log(jsonPosition);\line\tab\tab\tab File.WriteAllText(filePath, jsonPosition);\par
+\tab -Now when you play your scene. VOILA. Pretty. Refresh your Assets - VOILA! \line\tab -You now have three sweet new .txt files that are pretty printed as well. \par
+>Does this ACTUALLY save the position of the cubes when you play it? Not yet. You have to read the files. \par
+\tab\tab void Start()\line\tab\tab\{\line\tab\tab\tab filePath = Application.dataPath + "/" + name + ".json"; \line\line\tab\tab\tab string jsonStr = File.ReadAllText(filePath); \line\tab\line\tab\tab\tab Vector3 savePosition = JsonUtility.FromJson<Vector3>(jsonStr);\line\line\tab\tab\tab transform.position = savePosition; //sets pos of gameObject to pos in \line\tab\tab\tab\tab\tab\tab\tab            file\line\tab\tab\}\tab\par
+\tab\tab ^string jsonStr reads in the file.\line\tab\tab ^Vector3 savePosition uses JsonUtility to transform the file into Vector3\line\tab\tab ^transform.position will use the position in the file for the gameObject\par
+>Refresh your Assets and... VOILA!\par
+>One more issue to resolve. You need to make sure you don't load files if they don't exist.\par
+\tab\tab if(File.Exists(filePath)) //IF the file exists\line\tab\tab\{\line\tab\tab\tab string jsonStr... \line\tab\tab\tab ...\line\tab\tab\}\line\tab\tab\line\tab\tab ^If you don't already have the files, then don't bother w this. Otherwise...\line\line >Using the Json Utility, all we have to do is turn the game object into a file and turn it back later. (Easier than parsing lol). \par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+\par
+}
+ 
